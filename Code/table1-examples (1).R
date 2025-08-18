@@ -1,3 +1,5 @@
+install.packages("gtsummary", dependencies = TRUE)
+
 library(tidyverse)
 library(gtsummary)
 
@@ -76,5 +78,143 @@ tbl_summary(
   modify_footnote(update = everything() ~ NA) |>
   # replace the column headers and make them bold
   modify_header(label = "**Variable**", p.value = "**P**")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#exercise 3
+
+#Include categorical region, race/ethnicity, income, and the sleep variables
+
+tbl_summary(
+	nlsy,
+	include = c(
+		starts_with("sleep"),
+		race_eth_cat, region_cat, income
+	),
+label = list(
+	race_eth_cat ~ "Race/ethnicity",
+	region_cat ~ "region",
+	income ~ "Income",
+	sleep_wkdy ~ "Sleep on Weekdays",
+	sleep_wknd ~ "Sleep on Weekends"
+ )
+)
+
+
+
+#exercise 4
+
+#Stratify the table by sex.
+#Add a p-value comparing the sexes and an overall column combining both sexes.
+
+
+tbl_summary(
+	nlsy,
+	by = sex_cat,
+	include = c(
+		race_eth_cat, region_cat,
+		income, 	sleep_wkdy, sleep_wknd
+	),
+	label = list(
+		race_eth_cat ~ "Race/ethnicity",
+		region_cat ~ "region",
+		income ~ "Income",
+		sleep_wkdy ~ "Sleep on Weekdays",
+		sleep_wknd ~ "Sleep on Weekends"
+	)
+)
+
+tbl_summary(
+	nlsy,
+	by = sex_cat,
+	include = c(
+		race_eth_cat, region_cat,
+		income, 	sleep_wkdy, sleep_wknd
+	),
+	label = list(
+		race_eth_cat ~ "Race/ethnicity",
+		region_cat ~ "region",
+		income ~ "Income",
+		sleep_wkdy ~ "Sleep on Weekdays",
+		sleep_wknd ~ "Sleep on Weekends"
+	)
+) |>
+	# change the test used to compare sex_cat groups
+	add_p(test = list(
+		all_continuous() ~ "t.test",
+		all_categorical() ~ "chisq.test"
+	))
+
+
+
+#exercise 5
+
+#For the income variable, show the 10th and 90th percentiles of income with 3 digits,
+#and for the sleep variables, show the min and the max with 1 digit.
+
+
+tbl_summary(
+	nlsy,
+	by = sex_cat,
+	include = c(
+		race_eth_cat, region_cat,
+		income, 	sleep_wkdy, sleep_wknd
+	),
+	label = list(
+		race_eth_cat ~ "Race/ethnicity",
+		region_cat ~ "region",
+		income ~ "Income",
+		sleep_wkdy ~ "Sleep on Weekdays",
+		sleep_wknd ~ "Sleep on Weekends"
+	),
+	statistic = list(starts_with("sleep") ~ "min = {min}; max = {max}",
+									income = "{p10} to {p90}"),
+	digits = list(starts_with("sleep") ~ c(1, 1),
+										income ~ c(3,3)
+	))
+
+
+#exercise 6
+
+tbl_summary(
+	nlsy,
+	by = sex_cat,
+	include = c(
+		starts_with("sleep"),
+		race_eth_cat, region_cat, income
+	),
+	label = list(
+		race_eth_cat ~ "Race/ethnicity",
+		region_cat ~ "Region",
+		income ~ "Income",
+		sleep_wkdy ~ "Sleep on weekdays",
+		sleep_wknd ~ "Sleep on weekends"
+	)) |>
+	# figured out how to do this from
+	# https://stackoverflow.com/questions/73154658/adding-a-footnote-to-a-single-row-label-in-a-gtsummary-table
+	modify_table_styling(
+		columns = label,
+		rows = label == "Race/ethnicity",
+		footnote = "see https://www.nlsinfo.org/content/cohorts/nlsy79/topical-guide/household/race-ethnicity-immigration-data"
+	)
+
+
+
+
+
+
+
+
 
 
