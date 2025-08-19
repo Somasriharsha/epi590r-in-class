@@ -186,7 +186,9 @@ tbl_summary(
 
 
 #exercise 6
-
+#Add a footnote to the race/ethnicity variable with a link
+#to the page describing how NLSY classified participants:
+#https://www.nlsinfo.org/content/cohorts/nlsy79/topical-guide/household/race-ethnicity-immigration-data
 tbl_summary(
 	nlsy,
 	by = sex_cat,
